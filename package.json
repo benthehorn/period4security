@@ -6,20 +6,20 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-
+    "bcryptjs": "latest",
     "body-parser": "~1.13.2",
     "cookie-parser": "~1.3.5",
     "debug": "~2.2.0",
     "express": "~4.13.1",
-    "jwt-simple": "latest",
+    "express-jwt": "latest",
     "hbs": "~3.1.0",
-    "morgan": "~1.6.1",
-    "serve-favicon": "~2.3.0",
+    "helmet": "^1.3.0",
+    "jwt-simple": "latest",
     "mongoose": "latest",
-    "bcryptjs": "latest",
+    "morgan": "~1.6.1",
     "passport": "latest",
     "passport-jwt": "^2.0.0",
-    "express-jwt": "latest",
-    "sanitize-html": "latest"
+    "sanitize-html": "latest",
+    "serve-favicon": "~2.3.0"
   }
 }

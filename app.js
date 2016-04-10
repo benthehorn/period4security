@@ -12,7 +12,7 @@ var morgan = require('morgan');
 var mongoose = require('mongoose');
 var config = require('./config/database');
 var db = require('./config/db');
-
+var helmet = require('helmet');
 
 var port = process.env.PORT || 8080;
 var jwt = require('jwt-simple');
@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname + '/public/views'));
 app.use(morgan('dev'));
 app.use(passport.initialize());
-
+app.use(helmet());
 app.use('/', routes);
 app.use('/users', users);
 /*app.use('/pviews', pviews);*/
