@@ -48,35 +48,43 @@ angular.module('myApp.security', [])
 
             var newUserInstance = $uibModal.open({
                animation: false,
-                templateUrl: 'modals/addUser.html'
+                templateUrl: 'modals/addUser.html',
+                controller: 'AppLoginCtrl'
 
             });
 
-            console.log('New User:' + $scope.newUser);
-            $scope.newUser = {
-
-                userName: newUser.userName,
-                password: newUser.password
-            };
-            $scope.addUser = function(){
-                $uibModalInstance.close($scope.newUser);
-            };
-            $scope.cancel = function(){
-                $uibModalInstance.dismiss();
-            };
-
-            newUserInstance.result.then(function(newUser){
-                console.log('New User :' + newUser);
-                $http.post('/users/signup', newUser)
-                    .then(function(response){
+            newUserInstance.result.then(function (newUser) {
+                var newU = newUser;
+                console.log('New User :' + newU);
+                $http.post('/users/signup', newU)
+                    .then(function (response) {
                         console.log('Added user');
                     });
             });
 
+
+                console.log('New User:' + $scope.newUser);
+                $scope.newUser = {
+
+                    userName: newUser.userName,
+                    password: newUser.password
+                };
+                $scope.ok = function () {
+                    $uibModalInstance.close($scope.newUser);
+                };
+                $scope.cancel = function () {
+                    $uibModalInstance.dismiss();
+                };
+
+
+
+
         };
 
         $scope.login = function () {
-            $http.post('api/login', $scope.user)
+
+            $http.post('users/authenticate', $scope.user)
+
                 .success(function (data) {
                     $window.sessionStorage.id_token = data.token;
                     initializeFromToken($scope, $window.sessionStorage.id_token, jwtHelper);
@@ -119,6 +127,22 @@ angular.module('myApp.security', [])
         };
         init();// and fire it after definition
     })
+    /*.controller('NewUserModalCtrl', function ($scope, $uibModalInstance, newUser) {
+
+        $scope.newUser = {
+            userName: newUser.userName,
+            password: newUser.password
+
+        };
+    console.log('New User :' + newUser);
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.newUser);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss();
+        };
+    })*/
 
     .factory('AuthInterceptor', function ($rootScope, $q) {
         return {
@@ -151,7 +175,8 @@ angular.module('myApp.security', [])
 function initializeFromToken($scope, token, jwtHelper) {
     $scope.isAuthenticated = true;
     var tokenPayload = jwtHelper.decodeToken(token);
-    $scope.username = tokenPayload.username;
+    console.log('token :' + tokenPayload);
+    $scope.userName = tokenPayload.sub;
     $scope.isAdmin = false;
     $scope.isUser = false;
     tokenPayload.roles.forEach(function (role) {
@@ -165,7 +190,7 @@ function initializeFromToken($scope, token, jwtHelper) {
 }
 
 function clearUserDetails($scope) {
-    $scope.username = "";
+    $scope.userName = "";
     $scope.isAuthenticated = false;
     $scope.isAdmin = false;
     $scope.isUser = false;

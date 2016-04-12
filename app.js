@@ -12,7 +12,7 @@ var morgan = require('morgan');
 var mongoose = require('mongoose');
 var config = require('./config/database');
 var db = require('./config/db');
-var helmet = require('helmet');
+/*var helmet = require('helmet');*/
 
 var port = process.env.PORT || 8080;
 var jwt = require('jwt-simple');
@@ -39,7 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname + '/public/views'));
 app.use(morgan('dev'));
 app.use(passport.initialize());
-app.use(helmet());
+/*app.use(helmet());*/
 app.use('/', routes);
 app.use('/users', users);
 /*app.use('/pviews', pviews);*/
@@ -53,6 +53,16 @@ app.use('/api', function(req, res, next){
   })(req, res, next);
 });
 app.use('/api', restApi);
+
+app.use(function (req, res, next) {
+  if ( req.headers['x-forwarded-proto'] === 'http' ) {
+    var tmp= 'https://'+req.headers.host+req.originalUrl;
+    res.redirect(tmp);
+
+  } else {
+    return next();
+  }
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -84,6 +94,7 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
 
 app.listen(port);
 console.log('Server running at localhost : ' + port);

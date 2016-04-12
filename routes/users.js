@@ -33,6 +33,7 @@ router.post('/signup', function(req, res) {
 });
 
 router.post('/authenticate', function(req, res){
+  console.log('User in authenticate:' + req.body.userName);
   User.findOne({
     userName: sanitize(req.body.userName)
   }, function(err, user){
@@ -54,7 +55,7 @@ router.post('/authenticate', function(req, res){
           }
           var token = jwt.encode(payload, jwtConfig.secret);
 
-          res.json({token: 'JWT' + token});
+          res.json({token: 'JWT ' + token});
         }else{
           res.status(401).send({msg: 'Authentication failed. Wrong password !'});
         }
@@ -66,11 +67,7 @@ router.post('/authenticate', function(req, res){
 function sanitize(input){
   var dirty = input;
   var clean = sanitizeHtml(dirty);
-
-
     return clean;
-
-
 }
 
 module.exports = router;
