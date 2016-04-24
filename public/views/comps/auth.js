@@ -44,42 +44,7 @@ angular.module('myApp.security', [])
 
         clearUserDetails($scope);
 
-        $scope.addUser = function(){
 
-            var newUserInstance = $uibModal.open({
-               animation: false,
-                templateUrl: 'modals/addUser.html',
-                controller: 'AppLoginCtrl'
-
-            });
-
-            newUserInstance.result.then(function (newUser) {
-                var newU = newUser;
-                console.log('New User :' + newU);
-                $http.post('/users/signup', newU)
-                    .then(function (response) {
-                        console.log('Added user');
-                    });
-            });
-
-
-                console.log('New User:' + $scope.newUser);
-                $scope.newUser = {
-
-                    userName: newUser.userName,
-                    password: newUser.password
-                };
-                $scope.ok = function () {
-                    $uibModalInstance.close($scope.newUser);
-                };
-                $scope.cancel = function () {
-                    $uibModalInstance.dismiss();
-                };
-
-
-
-
-        };
 
         $scope.login = function () {
 
@@ -87,6 +52,7 @@ angular.module('myApp.security', [])
 
                 .success(function (data) {
                     $window.sessionStorage.id_token = data.token;
+                    console.log("Token in login : " + data.token);
                     initializeFromToken($scope, $window.sessionStorage.id_token, jwtHelper);
                     $location.path("#/view1");
                 })
@@ -97,6 +63,7 @@ angular.module('myApp.security', [])
         };
 
         $rootScope.logout = function () {
+
             $scope.isAuthenticated = false;
             $scope.isAdmin = false;
             $scope.isUser = false;
@@ -127,22 +94,6 @@ angular.module('myApp.security', [])
         };
         init();// and fire it after definition
     })
-    /*.controller('NewUserModalCtrl', function ($scope, $uibModalInstance, newUser) {
-
-        $scope.newUser = {
-            userName: newUser.userName,
-            password: newUser.password
-
-        };
-    console.log('New User :' + newUser);
-        $scope.ok = function () {
-            $uibModalInstance.close($scope.newUser);
-        };
-
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss();
-        };
-    })*/
 
     .factory('AuthInterceptor', function ($rootScope, $q) {
         return {
@@ -177,7 +128,7 @@ function initializeFromToken($scope, token, jwtHelper) {
     var tokenPayload = jwtHelper.decodeToken(token);
     console.log('token :' + tokenPayload);
     $scope.userName = tokenPayload.sub;
-    $scope.isAdmin = false;
+   /* $scope.isAdmin = false;
     $scope.isUser = false;
     tokenPayload.roles.forEach(function (role) {
         if (role === "Admin") {
@@ -186,7 +137,7 @@ function initializeFromToken($scope, token, jwtHelper) {
         if (role === "User") {
             $scope.isUser = true;
         }
-    });
+    });*/
 }
 
 function clearUserDetails($scope) {
